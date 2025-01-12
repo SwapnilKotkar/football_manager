@@ -1,19 +1,16 @@
-// src/app/store.js
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/authSlice";
 import teamReducer from "../features/team/teamSlice";
 import transferReducer from "../features/transfer/transferSlice";
 
-const store = configureStore({
+export const store = configureStore({
 	reducer: {
 		auth: authReducer,
 		team: teamReducer,
 		transfer: transferReducer,
 	},
-	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware({
-			serializableCheck: false, // Optional: Disable if you store non-serializable data
-		}),
 });
 
-export default store;
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
