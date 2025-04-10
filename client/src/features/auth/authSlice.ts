@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
 import { extractErrorMessage } from "@/utils/errorMessage";
@@ -21,8 +22,8 @@ interface AuthPayload {
 }
 
 const initialState: AuthState = {
-	accessToken: null,
-	refreshToken: null,
+	accessToken: Cookies.get("accessToken") || null,
+	refreshToken: Cookies.get("refreshToken") || null,
 	loading: false,
 	error: null,
 };
@@ -95,10 +96,14 @@ export const authSlice = createSlice({
 	initialState,
 	reducers: {
 		clearAuth(state) {
+			alert("clearAuth");
 			state.accessToken = null;
 			state.refreshToken = null;
 			state.loading = false;
 			state.error = null;
+
+			Cookies.remove("accessToken");
+			Cookies.remove("refreshToken");
 		},
 	},
 	extraReducers: (builder) => {
@@ -113,6 +118,15 @@ export const authSlice = createSlice({
 				state.loading = false;
 				state.accessToken = action.payload.accessToken;
 				state.refreshToken = action.payload.refreshToken;
+
+				Cookies.set("accessToken", action.payload.accessToken, {
+					secure: true,
+					sameSite: "Strict",
+				});
+				Cookies.set("refreshToken", action.payload.refreshToken, {
+					secure: true,
+					sameSite: "Strict",
+				});
 			}
 		);
 		builder.addCase(loginUser.rejected, (state, action) => {
@@ -144,6 +158,15 @@ export const authSlice = createSlice({
 				state.loading = false;
 				state.accessToken = action.payload.accessToken;
 				state.refreshToken = action.payload.refreshToken;
+
+				Cookies.set("accessToken", action.payload.accessToken, {
+					secure: true,
+					sameSite: "Strict",
+				});
+				Cookies.set("refreshToken", action.payload.refreshToken, {
+					secure: true,
+					sameSite: "Strict",
+				});
 			}
 		);
 		builder.addCase(refreshAccessToken.rejected, (state, action) => {
@@ -160,6 +183,9 @@ export const authSlice = createSlice({
 			state.loading = false;
 			state.accessToken = null;
 			state.refreshToken = null;
+
+			Cookies.remove("accessToken");
+			Cookies.remove("refreshToken");
 		});
 		builder.addCase(logoutUser.rejected, (state, action) => {
 			state.loading = false;

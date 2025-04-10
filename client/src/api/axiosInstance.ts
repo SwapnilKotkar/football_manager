@@ -43,6 +43,7 @@ axiosInstance.interceptors.response.use(
 			const refreshToken = state.auth.refreshToken;
 
 			if (refreshToken) {
+				console.log("Refreshing token...");
 				try {
 					// Refresh the access token
 					const response = await store

@@ -8,6 +8,7 @@ const { rateLimiter } = require("./middlewares/rateLimiter");
 const { sendEmail } = require("./utils/emailEmitter");
 const cluster = require("cluster");
 const os = require("os");
+// const connectDB = require("./config/db");
 require("dotenv").config();
 
 const numCPUs = os.cpus().length;
@@ -33,6 +34,9 @@ if (cluster.isMaster) {
 	app.use(helmet());
 	app.use(cors());
 	app.use(rateLimiter);
+
+	// Connect to MongoDB
+	// connectDB();
 
 	// Routes
 	app.use("/auth", authRoutes);
